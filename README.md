@@ -2,7 +2,7 @@
 
 ## 问题背景
 
-使用 Cursor 试用多次Pro账户后，遇到`Too many free trial accounts used on this machine`限制。
+使用 Cursor 试用多个Pro账户后，遇到`Too many free trial accounts used on this machine`限制。
 
 ## 项目简介
 
@@ -22,12 +22,12 @@ Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器�
 
 ## 使用指南
 
-⚠️ 使用前请确保：
+使用前请确保：
 1. 已完全关闭 Cursor 编辑器
 
 ### Windows 使用方式
 
-1. 下载 `device_id_win` 脚本
+1. 下载 `device_id_win.ps1` 脚本
 
 2. 运行方式（二选一）：
    ```powershell
@@ -39,7 +39,7 @@ Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器�
    ```
 
 3. 日志查看：
-   - 位置：`%TEMP%\CursorReset_当前日期.log`
+   - 位置：`$env:TEMP\cursor_device_id_update.log`
 
 ### macOS 使用方式
 
