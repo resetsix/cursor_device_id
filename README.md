@@ -8,78 +8,108 @@
 
 Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器设备标识(Device ID)的命令行工具。解决以上设备限制问题，通过重置设备标识来恢复正常使用。
 
-## 技术原理
-
-本工具通过修改 Cursor 编辑器的配置文件来更新设备标识。主要步骤包括：
-
-1. 自动定位配置文件
-2. 生成新的设备标识
-3. 创建配置备份
-4. 安全地更新配置
-
-## 主要特性
-
-- 📝 自动生成随机设备标识
-- 🔒 配置文件自动备份机制
-- ⚙️ 支持自定义设备标识
-- 🛠 使用系统原生工具，无额外依赖
-- 💻 命令行界面
-- 📋 详细操作日志
-
 ## 系统要求
 
-- 操作系统：macOS
-- 权限：用户目录写入权限
-- 依赖：系统内置的 bash、openssl
+### Windows
+- Windows 10/11
+- PowerShell 5.0+
+- 管理员权限
+
+### macOS
+- macOS 10.13+
+- bash shell
+- 用户目录写入权限
 
 ## 使用指南
 
-### 基本用法
+⚠️ 使用前请确保：
+1. 已完全关闭 Cursor 编辑器
 
-```sh
-# 显示帮助信息
-./cursor_device_id_manager.sh --help
+### Windows 使用方式
 
-# 使用随机生成的 ID 更新
-./cursor_device_id_manager.sh
+1. 下载 `device_id_win` 脚本
 
-# 指定 ID 更新
-./cursor_device_id_manager.sh --id <your-id>
+2. 运行方式（二选一）：
+   ```powershell
+   # 方式1：右键脚本 -> "以管理员身份运行 PowerShell"
 
-# 显示当前 ID
-./cursor_device_id_manager.sh --show
+   # 方式2：管理员 PowerShell 中执行
+   Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+   .\device_id_win.ps1
+   ```
 
-# 还原最近的备份
-./cursor_device_id_manager.sh --restore
+3. 日志查看：
+   - 位置：`%TEMP%\CursorReset_当前日期.log`
+
+### macOS 使用方式
+
+1. 下载 `device_id_mac.sh` 脚本
+
+2. 添加执行权限：
+   ```bash
+   chmod +x device_id_mac.sh
+   ```
+
+3. 运行选项：
+   ```bash
+   # 显示帮助
+   ./device_id_mac.sh --help
+
+   # 使用随机ID更新
+   ./device_id_mac.sh
+
+   # 指定ID更新
+   ./device_id_mac.sh --id <your-id>
+
+   # 显示当前ID
+   ./device_id_mac.sh --show
+
+   # 还原备份
+   ./device_id_mac.sh --restore
+   ```
+
+4. 日志查看：
+   - 位置：`~/Library/Application Support/Cursor/User/globalStorage/update.log`
+
+## 配置文件位置
+
+### Windows
+```
+%APPDATA%\Cursor\User\globalStorage\storage.json
 ```
 
-### 配置文件位置
-
-默认配置文件路径：
+### macOS
 ```
-~/Library/Application Support/Cursor/storage.json
+~/Library/Application Support/Cursor/User/globalStorage/storage.json
 ```
 
-### 备份说明
+## 备份说明
 
-- 位置：与原配置文件相同目录
-- 命名格式：`storage.json.backup_YYYYMMDD_HHMMSS`
-- 每次修改前自动创建
+### Windows
+- 位置：与配置文件相同目录
+- 格式：`storage.json.backup_YYYYMMDD_HHMMSS`
+- 保留最近5个备份
 
-## 使用场景
+### macOS
+- 位置：配置文件目录下的 `backups` 文件夹
+- 格式：`storage_YYYYMMDD_HHMMSS.json`
 
-1. 解除设备锁定
-2. 重置配置
+## 常见问题
 
-## 最佳实践
+### Windows
+1. "无法加载脚本"错误
+   - 以管理员身份运行 PowerShell
+   - 执行 `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process`
 
-1. 修改前：
-   - 关闭 Cursor 编辑器
-   - 保存重要数据
-2. 修改后：
-   - 验证配置更新
-   - 检查备份完整性
+2. "拒绝访问"错误
+   - 确保以管理员身份运行
+   - 检查文件权限
 
-## 安全建议
+### macOS
+1. "权限拒绝"错误
+   - 检查脚本执行权限
+   - 确认用户目录权限
 
-- 遵守软件使用条款
+2. "命令未找到"错误
+   - 确保在脚本所在目录执行
+   - 检查文件名大小写
