@@ -1,113 +1,127 @@
-# Cursor 设备标识管理工具
+# Cursor Device ID Management Tool
 
-## 问题背景
+Language: [简体中文](README_ZH.md) | English
 
-使用 Cursor 试用多个Pro账户后，遇到`Too many free trial accounts used on this machine`限制。
+## Background
 
-## 项目简介
+After trying multiple Pro accounts with Cursor, users may encounter the `Too many free trial accounts used on this machine` restriction.
 
-Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器设备标识(Device ID)的命令行工具。解决以上设备限制问题，通过重置设备标识来恢复正常使用。
+## Project Overview
 
-## 系统要求
+The Cursor Device ID Management Tool is a command-line utility for managing and modifying the Cursor editor's device identification (`Device ID`). It resolves the above device restriction issue by resetting the device identifier to restore normal usage.
+
+## System Requirements
 
 ### Windows
-- Windows 10/11
-- PowerShell 5.0+
-- 管理员权限
+
+- `CMD` or `PowerShell`
+- Administrator privileges
 
 ### macOS
-- macOS 10.13+
-- bash shell
-- 用户目录写入权限
 
-## 使用指南
+- `bash` or `zsh` shell
+- User directory write permissions
 
-使用前请确保：
-1. 已完全关闭 Cursor 编辑器
+## Usage Guide
 
-### Windows 使用方式
+Before using, please ensure:
 
-1. 下载 `device_id_win.ps1` 脚本
+1. Cursor editor is completely closed
 
-2. 运行方式（二选一）：
+### Windows Usage
+
+1. Download `device_id_win.ps1` script
+
+2. Run options (choose one):
+
    ```powershell
-   # 方式1：右键脚本 -> "以管理员身份运行 PowerShell"
+   # Option 1: Right-click script -> "Run PowerShell as Administrator"
 
-   # 方式2：管理员 PowerShell 中执行
+   # Option 2: Execute in Administrator PowerShell
    Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
    .\device_id_win.ps1
    ```
 
-3. 日志查看：
-   - 位置：`$env:TEMP\cursor_device_id_update.log`
+3. View logs:
+   - Location: `$env:TEMP\cursor_device_id_update.log`
 
-### macOS 使用方式
+### macOS Usage
 
-1. 运行, 使用随机ID更新
-``` bash
+1. Run with random ID update:
+
+```bash
 curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
 ```
 
-2. 运行选项：
+2. Run options:
+
    ```bash
-   # 显示帮助
+   # Show help
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --help
 
-   # 使用随机ID更新
+   # Update with random ID
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
 
-   # 指定ID更新
+   # Update with specific ID
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --id <your-id>
 
-   # 显示当前ID
+   # Show current ID
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --show
 
-   # 还原备份
+   # Restore backup
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --restore
    ```
 
-3. 日志查看：
-   - 位置：`~/Library/Application Support/Cursor/User/globalStorage/update.log`
+3. View logs:
+   - Location: `~/Library/Application Support/Cursor/User/globalStorage/update.log`
 
-## 配置文件位置
+## Configuration File Location
 
 ### Windows
+
 ```
 %APPDATA%\Cursor\User\globalStorage\storage.json
 ```
 
 ### macOS
+
 ```
 ~/Library/Application Support/Cursor/User/globalStorage/storage.json
 ```
 
-## 备份说明
+## Backup Information
 
 ### Windows
-- 位置：与配置文件相同目录
-- 格式：`storage.json.backup_YYYYMMDD_HHMMSS`
-- 保留最近5个备份
+
+- Location: Same directory as configuration file
+- Format: `storage.json.backup_YYYYMMDD_HHMMSS`
+- Keeps the 5 most recent backups
 
 ### macOS
-- 位置：配置文件目录下的 `backups` 文件夹
-- 格式：`storage_YYYYMMDD_HHMMSS.json`
 
-## 常见问题
+- Location: `backups` folder in the configuration file directory
+- Format: `storage_YYYYMMDD_HHMMSS.json`
+
+## Common Issues
 
 ### Windows
-1. "无法加载脚本"错误
-   - 以管理员身份运行 PowerShell
-   - 执行 `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process`
 
-2. "拒绝访问"错误
-   - 确保以管理员身份运行
-   - 检查文件权限
+1. "`Cannot load script`" error
+
+   - Run `PowerShell` as Administrator
+   - Execute `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process`
+
+2. "`Access denied`" error
+   - Ensure running as Administrator
+   - Check file permissions
 
 ### macOS
-1. "权限拒绝"错误
-   - 检查脚本执行权限
-   - 确认用户目录权限
 
-2. "命令未找到"错误
-   - 确保在脚本所在目录执行
-   - 检查文件名大小写
+1. "`Permission denied`" error
+
+   - Check script execution permissions
+   - Verify user directory permissions
+
+2. "`Command not found`" error
+   - Ensure executing from script directory
+   - Check file name case sensitivity
