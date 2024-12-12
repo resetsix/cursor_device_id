@@ -43,32 +43,30 @@ Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器�
 
 ### macOS 使用方式
 
-1. 下载 `device_id_mac.sh` 脚本
+1. 运行, 使用随机ID更新
+``` bash
+curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
+```
 
-2. 添加执行权限：
-   ```bash
-   chmod +x device_id_mac.sh
-   ```
-
-3. 运行选项：
+2. 运行选项：
    ```bash
    # 显示帮助
-   ./device_id_mac.sh --help
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --help
 
    # 使用随机ID更新
-   ./device_id_mac.sh
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
 
    # 指定ID更新
-   ./device_id_mac.sh --id <your-id>
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --id <your-id>
 
    # 显示当前ID
-   ./device_id_mac.sh --show
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --show
 
    # 还原备份
-   ./device_id_mac.sh --restore
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --restore
    ```
 
-4. 日志查看：
+3. 日志查看：
    - 位置：`~/Library/Application Support/Cursor/User/globalStorage/update.log`
 
 ## 配置文件位置
