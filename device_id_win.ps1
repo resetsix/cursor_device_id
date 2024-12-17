@@ -10,6 +10,8 @@ function Write-Log {
 try {
     Write-Log "开始更新Cursor设备ID..."
     
+    $backup_time = (Get-Date).ToString("yyyyMMddHHmmss")
+    
     $new_machine_id = [guid]::NewGuid().ToString().ToLower()
     $new_dev_device_id = [guid]::NewGuid().ToString().ToLower()
     $new_mac_machine_id = -join ((1..32) | ForEach-Object { "{0:x}" -f (Get-Random -Max 16) })
@@ -45,15 +47,19 @@ try {
 } catch {
     Write-Log "发生错误: $_"
     
-    $restore = Read-Host "是否恢复到最近的备份? (Y/N)"
-    if ($restore -eq 'Y') {
-        try {
-            Copy-Item "$machine_id_path.backup_$backup_time" $machine_id_path -ErrorAction Stop
-            Copy-Item "$storage_json_path.backup_$backup_time" $storage_json_path -ErrorAction Stop
-            Write-Log "已恢复到备份版本"
-        } catch {
-            Write-Log "恢复备份失败: $_"
+    if (Test-Path "$machine_id_path.backup_$backup_time" -and Test-Path "$storage_json_path.backup_$backup_time") {
+        $restore = Read-Host "是否恢复到最近的备份? (Y/N)"
+        if ($restore -eq 'Y') {
+            try {
+                Copy-Item "$machine_id_path.backup_$backup_time" $machine_id_path -ErrorAction Stop
+                Copy-Item "$storage_json_path.backup_$backup_time" $storage_json_path -ErrorAction Stop
+                Write-Log "已恢复到备份版本"
+            } catch {
+                Write-Log "恢复备份失败: $_"
+            }
         }
+    } else {
+        Write-Log "未找到可用的备份文件"
     }
     exit 1
 }
