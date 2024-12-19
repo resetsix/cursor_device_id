@@ -10,7 +10,7 @@ function Write-Log {
 try {
     Write-Log "开始更新Cursor设备ID..."
     
-    $backup_time = (Get-Date).ToString("yyyyMMddHHmmss")
+    $backup_time = (Get-Date).ToString('yyyyMMddHHmmss')
     
     $new_machine_id = [guid]::NewGuid().ToString().ToLower()
     $new_dev_device_id = [guid]::NewGuid().ToString().ToLower()
@@ -23,7 +23,6 @@ try {
         throw "必需的Cursor配置文件不存在"
     }
     
-    $backup_time = (Get-Date).ToString("yyyyMMddHHmmss")
     Copy-Item $machine_id_path "$machine_id_path.backup_$backup_time" -ErrorAction Stop
     Copy-Item $storage_json_path "$storage_json_path.backup_$backup_time" -ErrorAction Stop
     Write-Log "已创建配置文件备份"
