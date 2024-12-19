@@ -1,6 +1,6 @@
 # Cursor 设备标识管理工具
 
-语言：简体中文 | [English](README.md)
+语言：[English](README.md) | 简体中文
 
 ## 问题背景
 
@@ -14,12 +14,12 @@ Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器�
 
 ### Windows
 
-- CMD or PowerShell
+- `PowerShell`
 - 管理员权限
 
 ### macOS
 
-- bash or zsh shell
+- `bash` or `zsh` shell
 - 用户目录写入权限
 
 ## 使用指南
@@ -30,9 +30,14 @@ Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器�
 
 ### Windows 使用方式
 
-1. 下载 `device_id_win.ps1` 脚本
+1. 在线运行（推荐）：
 
-2. 运行方式（二选一）：
+```powershell
+# 以管理员身份运行 PowerShell 并执行:
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; iwr -useb https://raw.githubusercontent.com/resetsix/cursor_device_id/main/device_id_win.ps1 | iex
+```
+
+2. 手动下载运行：
 
    ```powershell
    # 方式1：右键脚本 -> "以管理员身份运行 PowerShell"
@@ -42,8 +47,7 @@ Cursor 设备标识管理工具是一个用于管理和修改 Cursor 编辑器�
    .\device_id_win.ps1
    ```
 
-3. 日志查看：
-   - 位置：`$env:TEMP\cursor_device_id_update.log`
+注意：执行完成后如无任何错误提示，则表示更新成功。
 
 ### macOS 使用方式
 
@@ -55,20 +59,28 @@ curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/head
 
 2. 运行选项：
 
+   a. 显示帮助:
    ```bash
-   # 显示帮助
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --help
+   ```
 
-   # 使用随机ID更新
+   b. 使用随机ID更新:
+   ```bash 
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
+   ```
 
-   # 指定ID更新
+   c. 指定ID更新:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --id <your-id>
+   ```
 
-   # 显示当前ID
+   d. 显示当前ID:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --show
+   ```
 
-   # 还原备份
+   e. 还原备份:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --restore
    ```
 
@@ -88,19 +100,6 @@ curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/head
 ```
 ~/Library/Application Support/Cursor/User/globalStorage/storage.json
 ```
-
-## 备份说明
-
-### Windows
-
-- 位置：与配置文件相同目录
-- 格式：`storage.json.backup_YYYYMMDD_HHMMSS`
-- 保留最近5个备份
-
-### macOS
-
-- 位置：配置文件目录下的 `backups` 文件夹
-- 格式：`storage_YYYYMMDD_HHMMSS.json`
 
 ## 常见问题
 

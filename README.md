@@ -1,6 +1,6 @@
 # Cursor Device ID Management Tool
 
-Language: [简体中文](README_ZH.md) | English
+Language: English | [简体中文](README_ZH.md)
 
 ## Background
 
@@ -14,7 +14,7 @@ The Cursor Device ID Management Tool is a command-line utility for managing and 
 
 ### Windows
 
-- `CMD` or `PowerShell`
+- `PowerShell`
 - Administrator privileges
 
 ### macOS
@@ -30,9 +30,14 @@ Before using, please ensure:
 
 ### Windows Usage
 
-1. Download `device_id_win.ps1` script
+1. Online execution (recommended):
 
-2. Run options (choose one):
+```powershell
+# Run PowerShell as Administrator and execute:
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; iwr -useb https://raw.githubusercontent.com/resetsix/cursor_device_id/main/device_id_win.ps1 | iex
+```
+
+2. Manual download and run:
 
    ```powershell
    # Option 1: Right-click script -> "Run PowerShell as Administrator"
@@ -42,8 +47,7 @@ Before using, please ensure:
    .\device_id_win.ps1
    ```
 
-3. View logs:
-   - Location: `$env:TEMP\cursor_device_id_update.log`
+Note: If no error messages appear after execution, the update was successful.
 
 ### macOS Usage
 
@@ -55,20 +59,28 @@ curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/head
 
 2. Run options:
 
+   a. Show help:
    ```bash
-   # Show help
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --help
+   ```
 
-   # Update with random ID
+   b. Update with random ID:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
+   ```
 
-   # Update with specific ID
+   c. Update with specific ID:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --id <your-id>
+   ```
 
-   # Show current ID
+   d. Show current ID:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --show
+   ```
 
-   # Restore backup
+   e. Restore backup:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --restore
    ```
 
@@ -88,19 +100,6 @@ curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/head
 ```
 ~/Library/Application Support/Cursor/User/globalStorage/storage.json
 ```
-
-## Backup Information
-
-### Windows
-
-- Location: Same directory as configuration file
-- Format: `storage.json.backup_YYYYMMDD_HHMMSS`
-- Keeps the 5 most recent backups
-
-### macOS
-
-- Location: `backups` folder in the configuration file directory
-- Format: `storage_YYYYMMDD_HHMMSS.json`
 
 ## Common Issues
 
