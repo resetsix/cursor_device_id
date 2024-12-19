@@ -1,68 +1,42 @@
-# 定义函数来生成随机标识符
-function New-RandomIdentifier {
-    param (
-        [Parameter(Mandatory=$true)]
-        [ValidateSet("UUID", "HEX")]
-        [string]$Type,
-        
-        [Parameter()]
-        [int]$Length = 32
-    )
-    
-    switch ($Type) {
-        "UUID" { return [guid]::NewGuid().ToString().ToLower() }
-        "HEX"  { return -join ((1..$Length) | ForEach-Object { '{0:x}' -f (Get-Random -Max 16) }) }
-    }
-}
+# 设置错误操作首选项
+$ErrorActionPreference = "Stop"
 
-# 定义文件路径
-$paths = @{
-    MachineId = Join-Path $env:APPDATA "Cursor\machineid"
-    Storage   = Join-Path $env:APPDATA "Cursor\User\globalStorage\storage.json"
-}
+# 设置配置文件路径
+$STORAGE_FILE = "$env:APPDATA\Cursor\User\globalStorage\storage.json"
 
-# 生成新的标识符
-$newIds = @{
-    MachineId     = New-RandomIdentifier -Type "UUID"
-    DevDeviceId   = New-RandomIdentifier -Type "UUID"
-    MacMachineId  = New-RandomIdentifier -Type "HEX"
-}
+Write-Host "开始执行脚本..."
+Write-Host "目标文件路径: $STORAGE_FILE"
 
 try {
+    # 生成随机ID
+    $NEW_MACHINE_ID = -join ((1..32) | ForEach-Object { "{0:x2}" -f (Get-Random -Max 256) })
+    $NEW_MAC_MACHINE_ID = -join ((1..32) | ForEach-Object { "{0:x2}" -f (Get-Random -Max 256) })
+    $NEW_SQM_ID = "{" + [guid]::NewGuid().ToString().ToUpper() + "}"
+    $NEW_DEV_DEVICE_ID = [guid]::NewGuid().ToString()
+
     # 创建备份
-    foreach ($path in $paths.GetEnumerator()) {
-        if (Test-Path $path.Value) {
-            Copy-Item -Path $path.Value -Destination "$($path.Value).backup" -Force
-            Write-Host "已创建备份: $($path.Value).backup" -ForegroundColor Green
-        }
+    if (Test-Path $STORAGE_FILE) {
+        $backupName = "$STORAGE_FILE.backup_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
+        Copy-Item $STORAGE_FILE $backupName
     }
 
-    # 更新 machineid 文件
-    $newIds.MachineId | Out-File -FilePath $paths.MachineId -Encoding UTF8 -NoNewline -Force
-    Write-Host "已更新 machineid 文件" -ForegroundColor Green
+    # 读取并更新JSON内容
+    $json = Get-Content $STORAGE_FILE -Raw
+    $json = $json -replace '"telemetry\.machineId"\s*:\s*"[^"]*"', "`"telemetry.machineId`": `"$NEW_MACHINE_ID`""
+    $json = $json -replace '"telemetry\.macMachineId"\s*:\s*"[^"]*"', "`"telemetry.macMachineId`": `"$NEW_MAC_MACHINE_ID`""
+    $json = $json -replace '"telemetry\.sqmId"\s*:\s*"[^"]*"', "`"telemetry.sqmId`": `"$NEW_SQM_ID`""
+    $json = $json -replace '"telemetry\.devDeviceId"\s*:\s*"[^"]*"', "`"telemetry.devDeviceId`": `"$NEW_DEV_DEVICE_ID`""
+    
+    # 保存更新后的内容
+    $json | Set-Content $STORAGE_FILE -NoNewline
 
-    # 更新 storage.json 文件
-    if (Test-Path $paths.Storage) {
-        $storageContent = Get-Content $paths.Storage -Raw | ConvertFrom-Json
-        $storageContent.'telemetry.devDeviceId' = $newIds.DevDeviceId
-        $storageContent.'telemetry.macMachineId' = $newIds.MacMachineId
-        $storageContent | ConvertTo-Json -Depth 100 | Out-File $paths.Storage -Encoding UTF8 -Force
-        Write-Host "已更新 storage.json 文件" -ForegroundColor Green
-    } else {
-        Write-Warning "storage.json 文件不存在"
-    }
+    Write-Host "操作成功完成!"
 }
 catch {
-    Write-Error "发生错误: $_"
-    # 如果出错，尝试恢复备份
-    foreach ($path in $paths.GetEnumerator()) {
-        $backupPath = "$($path.Value).backup"
-        if (Test-Path $backupPath) {
-            Copy-Item -Path $backupPath -Destination $path.Value -Force
-            Write-Host "已从备份恢复: $($path.Value)" -ForegroundColor Yellow
-        }
-    }
-    exit 1
+    Write-Host "脚本执行错误!"
+    Write-Host "错误信息: $($_.Exception.Message)"
+    Write-Host "请确保Cursor编辑器已关闭且您有足够的文件访问权限。"
 }
 
-Write-Host "所有操作已完成" -ForegroundColor Green
+Write-Host "按任意键继续..."
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
