@@ -1,64 +1,63 @@
-$log_file = "$env:TEMP\cursor_device_id_update.log"
+# 检查管理员权限
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    Write-Error "请以管理员权限运行此脚本"
+    exit 1
+}
 
+# 定义日志文件路径
+$logFile = "$env:TEMP\cursor_device_id_update.log"
+
+# 添加日志函数
 function Write-Log {
     param($Message)
-    $time = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    "$time - $Message" | Out-File -FilePath $log_file -Append
+    $logMessage = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): $Message"
+    Add-Content -Path $logFile -Value $logMessage
     Write-Host $Message
 }
 
 try {
-    Write-Log "开始更新Cursor设备ID..."
+    Write-Log "开始执行设备ID更新..."
     
-    $backup_time = (Get-Date).ToString('yyyyMMddHHmmss')
+    # 生成新的标识符
+    $new_cursor_device_id = [guid]::NewGuid().ToString().ToLower()
+    Write-Log "生成新的cursor_device_id: $new_cursor_device_id"
     
-    $new_machine_id = [guid]::NewGuid().ToString().ToLower()
     $new_dev_device_id = [guid]::NewGuid().ToString().ToLower()
-    $new_mac_machine_id = -join ((1..32) | ForEach-Object { "{0:x}" -f (Get-Random -Max 16) })
-    
-    $machine_id_path = "$env:APPDATA\Cursor\machineid"
+    $new_mac_cursor_device_id = -join ((1..32) | ForEach-Object { "{0:x}" -f (Get-Random -Max 16) })
+
+    # 定义文件路径
+    $cursor_device_id_path = "$env:APPDATA\Cursor\machineid"
     $storage_json_path = "$env:APPDATA\Cursor\User\globalStorage\storage.json"
-    
-    if (-not (Test-Path $machine_id_path) -or -not (Test-Path $storage_json_path)) {
-        throw "必需的Cursor配置文件不存在"
+
+    # 检查文件是否存在
+    if (-not (Test-Path $cursor_device_id_path) -or -not (Test-Path $storage_json_path)) {
+        Write-Error "未找到必要的Cursor配置文件"
+        exit 1
     }
-    
-    Copy-Item $machine_id_path "$machine_id_path.backup_$backup_time" -ErrorAction Stop
-    Copy-Item $storage_json_path "$storage_json_path.backup_$backup_time" -ErrorAction Stop
+
+    # 创建带时间戳的备份
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    Copy-Item $cursor_device_id_path "$cursor_device_id_path.backup_$timestamp" -ErrorAction Stop
+    Copy-Item $storage_json_path "$storage_json_path.backup_$timestamp" -ErrorAction Stop
     Write-Log "已创建配置文件备份"
-    
-    $new_machine_id | Out-File -FilePath $machine_id_path -Encoding UTF8 -NoNewline
+
+    # 更新 machineid 文件
+    $new_cursor_device_id | Out-File -FilePath $cursor_device_id_path -Encoding UTF8 -NoNewline
     Write-Log "已更新 machineid"
-    
+
+    # 读取并更新 storage.json 文件
     $content = Get-Content $storage_json_path -Raw | ConvertFrom-Json
     $content.'telemetry.devDeviceId' = $new_dev_device_id
-    $content.'telemetry.macMachineId' = $new_mac_machine_id
+    $content.'telemetry.macMachineId' = $new_mac_cursor_device_id
+
+    # 保存更新后的 storage.json 文件
     $content | ConvertTo-Json -Depth 100 | Out-File $storage_json_path -Encoding UTF8
     Write-Log "已更新 storage.json"
-    
-    Write-Log "所有更新已完成"
-    
-    Write-Log "新的设备ID:"
-    Write-Log "Machine ID: $new_machine_id"
-    Write-Log "Dev Device ID: $new_dev_device_id"
-    Write-Log "Mac Machine ID: $new_mac_machine_id"
-    
-} catch {
-    Write-Log "发生错误: $_"
-    
-    if (Test-Path "$machine_id_path.backup_$backup_time" -and Test-Path "$storage_json_path.backup_$backup_time") {
-        $restore = Read-Host "是否恢复到最近的备份? (Y/N)"
-        if ($restore -eq 'Y') {
-            try {
-                Copy-Item "$machine_id_path.backup_$backup_time" $machine_id_path -ErrorAction Stop
-                Copy-Item "$storage_json_path.backup_$backup_time" $storage_json_path -ErrorAction Stop
-                Write-Log "已恢复到备份版本"
-            } catch {
-                Write-Log "恢复备份失败: $_"
-            }
-        }
-    } else {
-        Write-Log "未找到可用的备份文件"
-    }
+
+    Write-Log "所有操作已完成"
+}
+catch {
+    Write-Log "执行过程中发生错误: $_"
     exit 1
 }
