@@ -21,8 +21,12 @@ error() {
 
 # Check if Cursor is running
 check_cursor() {
-    if pgrep -f "Cursor" > /dev/null; then
+    if pgrep -f "/Applications/Cursor.app/Contents/MacOS/Cursor" > /dev/null; then
         error "Please close Cursor application before running this script"
+    fi
+    
+    if pgrep -f "Cursor Helper" > /dev/null; then
+        pkill -f "Cursor Helper"
     fi
 }
 
