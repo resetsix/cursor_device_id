@@ -1,6 +1,6 @@
 # Cursor Device ID Management Tool
 
-Language: English | [简体中文](README_ZH.md)
+English | [简体中文](README_ZH.md)
 
 ## Background
 

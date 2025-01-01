@@ -19,6 +19,13 @@ error() {
     exit 1
 }
 
+# Check if Cursor is running
+check_cursor() {
+    if pgrep -f "Cursor" > /dev/null; then
+        error "Please close Cursor application before running this script"
+    fi
+}
+
 # Help
 usage() {
     cat << EOF
@@ -99,17 +106,38 @@ show_current_ids() {
 update_id() {
     local key=$1
     local value=$2
+    local temp_file="${STORAGE_FILE}.tmp"
     
-    mkdir -p "$(dirname "$STORAGE_FILE")"
-    
-    if [[ ! -f "$STORAGE_FILE" ]]; then
-        echo '{"'$key'": "'$value'"}' > "$STORAGE_FILE"
+    # Create temp file with new content
+    if [[ -f "$STORAGE_FILE" ]]; then
+        # Read entire file content
+        local content
+        content=$(cat "$STORAGE_FILE")
+        
+        # Create new content with updated value
+        local new_content
+        new_content=$(echo "$content" | perl -pe 's/"'$key'":\s*"[^"]*"/"'$key'": "'$value'"/g')
+        
+        # Write to temp file
+        echo "$new_content" > "$temp_file"
     else
-        sed -i.tmp 's/"'$key'":\s*"[^"]*"/"'$key'": "'$value'"/' "$STORAGE_FILE" || error "Failed to update $key"
-        rm -f "${STORAGE_FILE}.tmp"
+        echo '{"'$key'": "'$value'"}' > "$temp_file"
     fi
     
+    # Move temp file to original
+    mv "$temp_file" "$STORAGE_FILE"
+    
+    # Set permissions
     chmod 600 "$STORAGE_FILE"
+    
+    # Force write to disk
+    sync
+    
+    # Verify the change
+    if ! grep -q "\"$key\": \"$value\"" "$STORAGE_FILE"; then
+        error "Failed to update $key"
+    fi
+    
     log "Updated $key: $value"
 }
 
@@ -119,6 +147,9 @@ main() {
     local DEV_ID=""
     local MAC_ID=""
     local SQM_ID=""
+
+    # Check if Cursor is running
+    check_cursor
 
     # Parse args
     while [[ $# -gt 0 ]]; do
@@ -134,6 +165,7 @@ main() {
         esac
     done
 
+    # Create backup
     backup_file
 
     # Update IDs
@@ -160,6 +192,9 @@ main() {
     fi
     validate_sqm_id "$SQM_ID"
     update_id "telemetry.sqmId" "$SQM_ID"
+
+    # Force write to disk
+    sync
 
     log "All IDs updated"
     show_current_ids

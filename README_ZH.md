@@ -1,6 +1,6 @@
 # Cursor 设备标识管理工具
 
-语言：[English](README.md) | 简体中文
+[English](README.md) | 简体中文
 
 ## 问题背景
 
