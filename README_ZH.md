@@ -51,27 +51,40 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; iwr -useb https://ra
 
 ### macOS 使用方式
 
-1. 运行, 使用随机ID更新
+1. 运行，自动生成所有ID：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
 ```
 
-2. 运行选项：
+2. 可用选项：
 
    a. 显示帮助:
    ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --help
    ```
 
-   b. 使用随机ID更新:
-   ```bash 
+   b. 使用自动生成的ID更新:
+   ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
    ```
 
    c. 指定ID更新:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --id <your-id>
+   # 更新 machineId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -m <machine-id>
+   
+   # 更新 devDeviceId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -d <dev-id>
+   
+   # 更新 macMachineId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -c <mac-id>
+   
+   # 更新 sqmId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -s <sqm-id>
+   
+   # 同时更新多个ID
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -m <machine-id> -d <dev-id> -c <mac-id> -s <sqm-id>
    ```
 
    d. 显示当前ID:

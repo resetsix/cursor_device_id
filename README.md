@@ -51,30 +51,43 @@ Note: If no error messages appear after execution, the update was successful.
 
 ### macOS Usage
 
-1. Run with random ID update:
+1. Run with auto-generated IDs:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
 ```
 
-2. Run options:
+2. Available options:
 
    a. Show help:
    ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --help
    ```
 
-   b. Update with random ID:
+   b. Update with auto-generated IDs:
    ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash
    ```
 
-   c. Update with specific ID:
+   c. Update with specific IDs:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --id <your-id>
+   # Update machineId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -m <machine-id>
+   
+   # Update devDeviceId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -d <dev-id>
+   
+   # Update macMachineId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -c <mac-id>
+   
+   # Update sqmId
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -s <sqm-id>
+   
+   # Update multiple IDs
+   curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- -m <machine-id> -d <dev-id> -c <mac-id> -s <sqm-id>
    ```
 
-   d. Show current ID:
+   d. Show current IDs:
    ```bash
    curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/heads/main/device_id_mac.sh | bash -s -- --show
    ```
