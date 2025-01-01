@@ -19,17 +19,6 @@ error() {
     exit 1
 }
 
-# Check if Cursor is running
-check_cursor() {
-    if pgrep -f "/Applications/Cursor.app/Contents/MacOS/Cursor" > /dev/null; then
-        error "Please close Cursor application before running this script"
-    fi
-    
-    if pgrep -f "Cursor Helper" > /dev/null; then
-        pkill -f "Cursor Helper"
-    fi
-}
-
 # Help
 usage() {
     cat << EOF
@@ -151,9 +140,6 @@ main() {
     local DEV_ID=""
     local MAC_ID=""
     local SQM_ID=""
-
-    # Check if Cursor is running
-    check_cursor
 
     # Parse args
     while [[ $# -gt 0 ]]; do
