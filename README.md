@@ -36,6 +36,10 @@ curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/head
 >
 > ~/Library/Application Support/Cursor/User/globalStorage/storage.json
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=resetsix/cursor_device_id&type=Date)](https://star-history.com/#resetsix/cursor_device_id&Date)
+
 ## Contributors
 
 Welcome to join us and contribute code to cursor_device_id together.

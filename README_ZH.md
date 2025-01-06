@@ -29,7 +29,6 @@ curl -fsSL https://raw.githubusercontent.com/resetsix/cursor_device_id/refs/head
 
 `~/Library/Application Support/Cursor/User/globalStorage/update.log`
 
-
 > 如果你要找storage.json文件位置
 >
 > %APPDATA%\Cursor\User\globalStorage\storage.json
